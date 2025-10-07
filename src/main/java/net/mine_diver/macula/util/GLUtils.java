@@ -17,6 +17,15 @@ public class GLUtils {
     public static final String glVendorString = GL11.glGetString(GL11.GL_VENDOR);
     public static final String glRendererString = GL11.glGetString(GL11.GL_RENDERER);
 
+    // Screen orthographic matrix
+    private static final Matrix4f SCREEN_ORTHO_MATRIX = new Matrix4f().setOrtho(0f, 1f, 0f, 1f, 0f, 1f);
+    private static final FloatBuffer SCREEN_ORTHO_BUFFER;
+    
+    static {
+        SCREEN_ORTHO_BUFFER = BufferUtils.createFloatBuffer(16);
+        SCREEN_ORTHO_MATRIX.get(SCREEN_ORTHO_BUFFER);
+    }
+
     public static void glEnableWrapper(int cap) {
         GL11.glEnable(cap);
         if (cap == GL11.GL_TEXTURE_2D) {
@@ -85,20 +94,17 @@ public class GLUtils {
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
     }
 
-    public static void glSetupOrthographicProjection(float left, float right, float bottom, float top, float near, float far) {
-        GL11.glMatrixMode(GL11.GL_PROJECTION);
-        GL11.glLoadIdentity();
-
-        GL11.glOrtho(left, right, bottom, top, near, far);
-
-        GL11.glMatrixMode(GL11.GL_MODELVIEW);
-        GL11.glLoadIdentity();
-    }
-
     public static void loadMatrixToOpenGL(Matrix4f matrix) {
         FloatBuffer buffer = BufferUtils.createFloatBuffer(16);
         matrix.get(buffer);
         GL11.glLoadMatrix(buffer);
+    }
+
+    public static void setupScreenOrthographicProjection() {
+        GL11.glMatrixMode(GL11.GL_PROJECTION);
+        GL11.glLoadMatrix(SCREEN_ORTHO_BUFFER);
+        GL11.glMatrixMode(GL11.GL_MODELVIEW);
+        GL11.glLoadIdentity();
     }
 
     public static int glCreateDepthBuffer(int width, int height) {

@@ -137,7 +137,7 @@ public class ShaderCore {
 
         GL11.glPushMatrix();
 
-        GLUtils.glSetupOrthographicProjection(0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f);
+        GLUtils.setupScreenOrthographicProjection();
 
         GL11.glDisable(GL11.GL_DEPTH_TEST);
         GL11.glEnable(GL11.GL_TEXTURE_2D);
@@ -240,3 +240,4 @@ public class ShaderCore {
         GL13.glActiveTexture(GL13.GL_TEXTURE0);
     }
 }
+

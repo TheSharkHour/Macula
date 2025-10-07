@@ -4,10 +4,8 @@ import net.mine_diver.macula.shader.uniform.MatrixUniforms;
 import net.mine_diver.macula.util.GLUtils;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
-import org.lwjgl.BufferUtils;
 
 import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
 
 import static org.lwjgl.opengl.ARBFramebufferObject.*;
 import static org.lwjgl.opengl.GL11.*;
