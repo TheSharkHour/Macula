@@ -1,52 +1,90 @@
 package net.mine_diver.macula.shader;
 
+import net.mine_diver.macula.shader.uniform.MatrixUniforms;
 import net.mine_diver.macula.util.GLUtils;
+import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import org.lwjgl.BufferUtils;
 
 import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 
 import static org.lwjgl.opengl.ARBFramebufferObject.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.GL_CLAMP_TO_BORDER;
 
 public class ShadowMap {
+
     public static boolean shadowEnabled = false;
     public static int shadowResolution = 1024;
-    public static float shadowMapHalfPlane = 30f;
+    public static float shadowMapHalfPlane = 64f;
 
-    private static final float NEAR = 0.05f;
     private static final float FAR = 256f;
+    private static final float NEAR = 1f / 16384f;
 
     public static boolean isShadowPass = false;
 
     public static int shadowFramebufferId = 0;
     public static int shadowDepthTextureId = 0;
     private static int shadowDepthBufferId = 0;
+    
+    public static Matrix4f shadowModelView = new Matrix4f();
 
     public static void setupShadowViewport(float f, Vector3f cameraPosition) {
         glViewport(0, 0, shadowResolution, shadowResolution);
 
-        GLUtils.glSetupOrthographicProjection(
-                -shadowMapHalfPlane, shadowMapHalfPlane,
-                -shadowMapHalfPlane, shadowMapHalfPlane,
-                NEAR, FAR
+        Matrix4f shadowProjectionMatrix = new Matrix4f().setOrtho(
+                -shadowMapHalfPlane,
+                shadowMapHalfPlane,
+                -shadowMapHalfPlane,
+                shadowMapHalfPlane,
+                NEAR,
+                FAR
+        );
+        
+        MatrixUniforms.updateShadowProjection(shadowProjectionMatrix);
+
+        // Load projection matrix to OpenGL
+        glMatrixMode(GL_PROJECTION);
+        GLUtils.loadMatrixToOpenGL(shadowProjectionMatrix);
+
+        Matrix4f lightModelView = new Matrix4f();
+        lightModelView.translate(0f, 0f, -128f);
+        lightModelView.rotate((float) Math.toRadians(90f), 0f, 0f, -1f);
+
+        float angle = Math.round(ShaderCore.MINECRAFT.world.method_198(f) * 360f);
+        if (angle < 90f || angle > 270f) lightModelView.rotate(
+                (float) Math.toRadians(angle - 90f),
+                -1f,
+                0f,
+                0f
+        ); // Daytime
+        else lightModelView.rotate(
+                (float) Math.toRadians(angle + 90f),
+                -1f,
+                0f,
+                0f
+        ); // Nighttime
+
+        Vector3f cameraInLightSpace = new org.joml.Vector3f();
+        lightModelView.transformPosition(cameraPosition, cameraInLightSpace);
+
+        // Texel Snapping
+        float texelSize = (2f * shadowMapHalfPlane) / shadowResolution;
+        Vector3f snappedCenter = new Vector3f(
+                cameraInLightSpace.x - Math.round(cameraInLightSpace.x / texelSize) * texelSize,
+                cameraInLightSpace.y - Math.round(cameraInLightSpace.y / texelSize) * texelSize,
+                0f
         );
 
-        glTranslatef(0f, 0f, -100f);
-        glRotatef(90f, 0f, 0f, -1f);
+        Matrix4f snapTransform = new Matrix4f().translation(snappedCenter);
+        snapTransform.mul(lightModelView, shadowModelView);
 
-        float angle = ShaderCore.MINECRAFT.world.method_198(f) * 360f;
-        if (angle < 90f || angle > 270f)
-            glRotatef(angle - 90f, -1f, 0f, 0f); // Daytime
-        else
-            glRotatef(angle + 90f, -1f, 0f, 0f); // Nighttime
+        MatrixUniforms.updateShadowModelView(shadowModelView);
 
-        // Reduces jitter
-        glTranslatef(
-                cameraPosition.x % 10f - 5f,
-                cameraPosition.y % 10f - 5f,
-                cameraPosition.z % 10f - 5f
-        );
+        // Load model-view matrix to OpenGL
+        glMatrixMode(GL_MODELVIEW);
+        GLUtils.loadMatrixToOpenGL(shadowModelView);
     }
 
     public static void initializeShadowMap() {
@@ -59,8 +97,9 @@ public class ShadowMap {
         createShadowDepthTexture();
 
         int status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-        if (status != GL_FRAMEBUFFER_COMPLETE)
-            System.err.println("Failed creating shadow framebuffer! (Status " + status + ")");
+        if (status != GL_FRAMEBUFFER_COMPLETE) System.err.println(
+                "Failed creating shadow framebuffer! (Status " + status + ")"
+        );
     }
 
     private static void createShadowFramebuffer() {
@@ -76,9 +115,17 @@ public class ShadowMap {
     private static void createShadowDepthBuffer() {
         if (shadowDepthBufferId != 0) glDeleteFramebuffers(shadowDepthBufferId);
 
-        shadowDepthBufferId = GLUtils.glCreateDepthBuffer(shadowResolution, shadowResolution);
+        shadowDepthBufferId = GLUtils.glCreateDepthBuffer(
+                shadowResolution,
+                shadowResolution
+        );
 
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, shadowDepthBufferId);
+        glFramebufferRenderbuffer(
+                GL_FRAMEBUFFER,
+                GL_DEPTH_ATTACHMENT,
+                GL_RENDERBUFFER,
+                shadowDepthBufferId
+        );
     }
 
     private static void createShadowDepthTexture() {
@@ -95,12 +142,28 @@ public class ShadowMap {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-        ByteBuffer shadowMapBuffer = ByteBuffer.allocateDirect(shadowResolution * shadowResolution * 4);
+        ByteBuffer shadowMapBuffer = ByteBuffer.allocateDirect(
+                shadowResolution * shadowResolution * 4
+        );
 
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, shadowResolution, shadowResolution, 0,
+        glTexImage2D(
+                GL_TEXTURE_2D,
+                0,
                 GL_DEPTH_COMPONENT,
-                GL_FLOAT, shadowMapBuffer);
+                shadowResolution,
+                shadowResolution,
+                0,
+                GL_DEPTH_COMPONENT,
+                GL_FLOAT,
+                shadowMapBuffer
+        );
 
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadowDepthTextureId, 0);
+        glFramebufferTexture2D(
+                GL_FRAMEBUFFER,
+                GL_DEPTH_ATTACHMENT,
+                GL_TEXTURE_2D,
+                shadowDepthTextureId,
+                0
+        );
     }
 }

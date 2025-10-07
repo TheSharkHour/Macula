@@ -60,24 +60,15 @@ public class MatrixUniforms {
         modelViewCelestial.set(matrixBuffer);
     }
 
-
-    public static void updateShadowModelView() {
+    public static void updateShadowModelView(Matrix4f matrix) {
         // Update shadow model-view
-        matrixBuffer.clear();
-        GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, matrixBuffer);
-        shadowModelView.set(matrixBuffer);
-
-        // Update inverse shadow model-view
+        shadowModelView.set(matrix);
         shadowModelView.invert(shadowModelViewInverse);
     }
 
-    public static void updateShadowProjection() {
+    public static void updateShadowProjection(Matrix4f matrix) {
         // Update shadow projection
-        matrixBuffer.clear();
-        GL11.glGetFloat(GL11.GL_PROJECTION_MATRIX, matrixBuffer);
-        shadowProjection.set(matrixBuffer);
-
-        // Update inverse shadow projection
+        shadowProjection.set(matrix);
         shadowProjection.invert(shadowProjectionInverse);
     }
 }

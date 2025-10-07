@@ -35,9 +35,6 @@ public class PositionUniforms {
 
         if (ShadowMap.isShadowPass) {
             ShadowMap.setupShadowViewport(alpha, currentPosition);
-
-            MatrixUniforms.updateShadowProjection();
-            MatrixUniforms.updateShadowModelView();
             return;
         }
 

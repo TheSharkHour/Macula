@@ -4,9 +4,13 @@ import net.mine_diver.macula.shader.ShaderCore;
 import net.mine_diver.macula.shader.program.ShaderProgram;
 import net.mine_diver.macula.shader.program.ShaderProgramType;
 import net.mine_diver.macula.shader.program.Uniform;
+import org.joml.Matrix4f;
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.ARBFramebufferObject;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
+
+import java.nio.FloatBuffer;
 
 public class GLUtils {
     public static final String glVersionString = GL11.glGetString(GL11.GL_VERSION);
@@ -89,6 +93,12 @@ public class GLUtils {
 
         GL11.glMatrixMode(GL11.GL_MODELVIEW);
         GL11.glLoadIdentity();
+    }
+
+    public static void loadMatrixToOpenGL(Matrix4f matrix) {
+        FloatBuffer buffer = BufferUtils.createFloatBuffer(16);
+        matrix.get(buffer);
+        GL11.glLoadMatrix(buffer);
     }
 
     public static int glCreateDepthBuffer(int width, int height) {
