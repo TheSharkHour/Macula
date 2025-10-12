@@ -1,12 +1,11 @@
-package net.mine_diver.macula;
+package net.mine_diver.macula.core;
 
 import net.fabricmc.loader.api.FabricLoader;
-import net.mine_diver.macula.option.ShaderConfig;
-import net.mine_diver.macula.option.ShaderOption;
-import net.mine_diver.macula.shader.ShaderCore;
-import net.mine_diver.macula.shader.program.ShaderProgram;
-import net.mine_diver.macula.util.UniformUtils;
-import net.mine_diver.macula.util.MinecraftInstance;
+import net.mine_diver.macula.config.ShaderConfig;
+import net.mine_diver.macula.config.ShaderOption;
+import net.mine_diver.macula.rendering.pipeline.ShaderProgram;
+import net.mine_diver.macula.utils.UniformUtils;
+import net.mine_diver.macula.utils.MinecraftInstance;
 import net.minecraft.client.Minecraft;
 
 import java.io.BufferedReader;

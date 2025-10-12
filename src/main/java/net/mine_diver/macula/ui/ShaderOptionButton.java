@@ -1,7 +1,7 @@
-package net.mine_diver.macula.gui;
+package net.mine_diver.macula.ui;
 
-import net.mine_diver.macula.option.ShaderConfig;
-import net.mine_diver.macula.option.ShaderOption;
+import net.mine_diver.macula.config.ShaderConfig;
+import net.mine_diver.macula.config.ShaderOption;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.resource.language.I18n;
 

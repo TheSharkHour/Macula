@@ -1,13 +1,14 @@
 // Code written by daxnitro.  Do what you want with it but give me some credit if you use it in whole or in part.
 
-package net.mine_diver.macula.shader;
+package net.mine_diver.macula.core;
 
-import net.mine_diver.macula.ShaderPack;
-import net.mine_diver.macula.option.ShaderConfig;
-import net.mine_diver.macula.shader.program.ShaderProgram;
-import net.mine_diver.macula.shader.program.ShaderProgramType;
-import net.mine_diver.macula.util.GLUtils;
-import net.mine_diver.macula.util.MinecraftInstance;
+import net.mine_diver.macula.config.ShaderConfig;
+import net.mine_diver.macula.rendering.FramebufferManager;
+import net.mine_diver.macula.rendering.ShadowMapManager;
+import net.mine_diver.macula.rendering.pipeline.ShaderProgram;
+import net.mine_diver.macula.rendering.pipeline.ShaderProgramType;
+import net.mine_diver.macula.utils.GLUtils;
+import net.mine_diver.macula.utils.MinecraftInstance;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.ARBFramebufferObject;
@@ -47,23 +48,23 @@ public class ShaderCore {
 
         System.out.println("GL_MAX_DRAW_BUFFERS = " + maxDrawBuffers);
 
-        Framebuffer.colorAttachments = 4;
+        FramebufferManager.colorAttachments = 4;
 
         ShaderProgram.initializeShaders();
 
-        if (Framebuffer.colorAttachments > maxDrawBuffers) System.out.println("Not enough draw buffers!");
+        if (FramebufferManager.colorAttachments > maxDrawBuffers) System.out.println("Not enough draw buffers!");
 
         ShaderProgram.resolveFallbacks();
 
-        Framebuffer.defaultDrawBuffers = BufferUtils.createIntBuffer(Framebuffer.colorAttachments);
-        for (int i = 0; i < Framebuffer.colorAttachments; ++i)
-            Framebuffer.defaultDrawBuffers.put(i, ARBFramebufferObject.GL_COLOR_ATTACHMENT0 + i);
+        FramebufferManager.defaultDrawBuffers = BufferUtils.createIntBuffer(FramebufferManager.colorAttachments);
+        for (int i = 0; i < FramebufferManager.colorAttachments; ++i)
+            FramebufferManager.defaultDrawBuffers.put(i, ARBFramebufferObject.GL_COLOR_ATTACHMENT0 + i);
 
-        Framebuffer.defaultTextures = BufferUtils.createIntBuffer(Framebuffer.colorAttachments);
-        Framebuffer.defaultRenderBuffers = BufferUtils.createIntBuffer(Framebuffer.colorAttachments);
+        FramebufferManager.defaultTextures = BufferUtils.createIntBuffer(FramebufferManager.colorAttachments);
+        FramebufferManager.defaultRenderBuffers = BufferUtils.createIntBuffer(FramebufferManager.colorAttachments);
 
         resize();
-        ShadowMap.initializeShadowMap();
+        ShadowMapManager.initializeShadowMap();
         isInitialized = true;
     }
 
@@ -72,12 +73,12 @@ public class ShaderCore {
         clearColor[1] = green;
         clearColor[2] = blue;
 
-        if (ShadowMap.isShadowPass) {
+        if (ShadowMapManager.isShadowPass) {
             GLUtils.glClearBuffer(clearColor[0], clearColor[1], clearColor[2], 1f);
             return;
         }
 
-        GL20.glDrawBuffers(Framebuffer.defaultDrawBuffers);
+        GL20.glDrawBuffers(FramebufferManager.defaultDrawBuffers);
         GLUtils.glClearBuffer(0f, 0f, 0f, 0f);
 
         GL20.glDrawBuffers(ARBFramebufferObject.GL_COLOR_ATTACHMENT0);
@@ -86,7 +87,7 @@ public class ShaderCore {
         GL20.glDrawBuffers(ARBFramebufferObject.GL_COLOR_ATTACHMENT1);
         GLUtils.glClearBuffer(1f, 1f, 1f, 1f);
 
-        GL20.glDrawBuffers(Framebuffer.defaultDrawBuffers);
+        GL20.glDrawBuffers(FramebufferManager.defaultDrawBuffers);
     }
 
     private static void resize() {
@@ -95,45 +96,45 @@ public class ShaderCore {
 
         aspectRatio = (float) renderWidth / (float) renderHeight;
 
-        Framebuffer.setupRenderTextures();
-        Framebuffer.setupFrameBuffer();
+        FramebufferManager.setupRenderTextures();
+        FramebufferManager.setupFrameBuffer();
     }
 
     public static void beginRender(Minecraft minecraft, float f, long l) {
         rainStrength = minecraft.world.getRainGradient(f);
 
-        if (ShadowMap.isShadowPass) return;
+        if (ShadowMapManager.isShadowPass) return;
 
         if (!isInitialized) init();
         if (!ShaderPack.shaderPackLoaded) return;
         if (MINECRAFT.displayWidth != renderWidth || MINECRAFT.displayHeight != renderHeight)
             resize();
 
-        if (ShadowMap.shadowEnabled) {
+        if (ShadowMapManager.shadowEnabled) {
             // do shadow pass
             boolean preShadowPassThirdPersonView = MINECRAFT.options.thirdPerson;
             MINECRAFT.options.thirdPerson = true;
 
-            ShadowMap.isShadowPass = true;
+            ShadowMapManager.isShadowPass = true;
 
             ARBFramebufferObject.glBindFramebuffer(ARBFramebufferObject.GL_FRAMEBUFFER,
-                    ShadowMap.shadowFramebufferId);
+                    ShadowMapManager.shadowFramebufferId);
             ShaderProgram.useShaderProgram(ShaderProgramType.NONE);
             MINECRAFT.gameRenderer.delta(f, l);
             GL11.glFlush();
 
-            ShadowMap.isShadowPass = false;
+            ShadowMapManager.isShadowPass = false;
             MINECRAFT.options.thirdPerson = preShadowPassThirdPersonView;
         }
 
         ARBFramebufferObject.glBindFramebuffer(ARBFramebufferObject.GL_FRAMEBUFFER,
-                Framebuffer.defaultFramebufferId);
+                FramebufferManager.defaultFramebufferId);
 
         ShaderProgram.useShaderProgram(ShaderProgramType.TEXTURED);
     }
 
     public static void endRender() {
-        if (ShadowMap.isShadowPass) return;
+        if (ShadowMapManager.isShadowPass) return;
 
         GL11.glPushMatrix();
 
@@ -148,7 +149,7 @@ public class ShaderCore {
 
         ShaderProgram.useShaderProgram(ShaderProgramType.COMPOSITE);
 
-        GL20.glDrawBuffers(Framebuffer.defaultDrawBuffers);
+        GL20.glDrawBuffers(FramebufferManager.defaultDrawBuffers);
 
         bindPostprocessingTextures();
         GLUtils.glDrawQuad();
@@ -197,16 +198,16 @@ public class ShaderCore {
         GL11.glDisable(GL11.GL_BLEND);
         ShaderProgram.useShaderProgram(ShaderProgramType.TEXTURED);
 
-        if (ShadowMap.isShadowPass)
+        if (ShadowMapManager.isShadowPass)
             ARBFramebufferObject.glBindFramebuffer(ARBFramebufferObject.GL_FRAMEBUFFER,
-                    ShadowMap.shadowFramebufferId); // was set to 0 in beginWeather()
+                    ShadowMapManager.shadowFramebufferId); // was set to 0 in beginWeather()
     }
 
     public static void beginWeather() {
         GL11.glEnable(GL11.GL_BLEND);
         ShaderProgram.useShaderProgram(ShaderProgramType.WEATHER);
 
-        if (ShadowMap.isShadowPass)
+        if (ShadowMapManager.isShadowPass)
             ARBFramebufferObject.glBindFramebuffer(ARBFramebufferObject.GL_FRAMEBUFFER,
                     0); // will be set to sbf in endHand()
     }
@@ -217,14 +218,14 @@ public class ShaderCore {
     }
 
     private static void bindPostprocessingTextures() {
-        for (byte i = 0; i < Framebuffer.colorAttachments; i++) {
+        for (byte i = 0; i < FramebufferManager.colorAttachments; i++) {
             GL13.glActiveTexture(GL13.GL_TEXTURE0 + i);
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, Framebuffer.defaultTextures.get(i));
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, FramebufferManager.defaultTextures.get(i));
         }
 
-        if (ShadowMap.shadowEnabled) {
+        if (ShadowMapManager.shadowEnabled) {
             GL13.glActiveTexture(GL13.GL_TEXTURE7);
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, ShadowMap.shadowDepthTextureId);
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, ShadowMapManager.shadowDepthTextureId);
         }
 
         GL13.glActiveTexture(GL13.GL_TEXTURE0);

@@ -1,8 +1,8 @@
 package net.mine_diver.macula.mixin;
 
-import net.mine_diver.macula.ShaderPack;
-import net.mine_diver.macula.shader.ShaderCore;
-import net.mine_diver.macula.shader.uniform.PositionUniforms;
+import net.mine_diver.macula.core.ShaderPack;
+import net.mine_diver.macula.core.ShaderCore;
+import net.mine_diver.macula.shaders.uniform.PositionUniforms;
 import net.minecraft.client.Minecraft;
 import net.minecraft.sortme.GameRenderer;
 import org.spongepowered.asm.mixin.Mixin;

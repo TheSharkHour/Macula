@@ -1,6 +1,6 @@
-package net.mine_diver.macula.shader.program;
+package net.mine_diver.macula.rendering.pipeline;
 
-public enum Uniform {
+public enum ShaderUniform {
     TEXTURE("texture"),
     LIGHTMAP("lightmap"),
     NORMALS("normals"),
@@ -40,7 +40,7 @@ public enum Uniform {
 
     private final String uniformName;
 
-    Uniform(String uniformName) {
+    ShaderUniform(String uniformName) {
         this.uniformName = uniformName;
     }
 

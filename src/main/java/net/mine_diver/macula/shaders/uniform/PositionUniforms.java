@@ -1,7 +1,7 @@
-package net.mine_diver.macula.shader.uniform;
+package net.mine_diver.macula.shaders.uniform;
 
-import net.mine_diver.macula.shader.ShaderCore;
-import net.mine_diver.macula.shader.ShadowMap;
+import net.mine_diver.macula.core.ShaderCore;
+import net.mine_diver.macula.rendering.ShadowMapManager;
 import net.minecraft.entity.LivingEntity;
 import org.joml.Vector3f;
 
@@ -33,8 +33,8 @@ public class PositionUniforms {
 
         Vector3f currentPosition = tempPrevRender.lerp(tempRender, alpha);
 
-        if (ShadowMap.isShadowPass) {
-            ShadowMap.setupShadowViewport(alpha, currentPosition);
+        if (ShadowMapManager.isShadowPass) {
+            ShadowMapManager.setupShadowViewport(alpha, currentPosition);
             return;
         }
 

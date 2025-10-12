@@ -1,7 +1,8 @@
-package net.mine_diver.macula.shader;
+package net.mine_diver.macula.rendering;
 
-import net.mine_diver.macula.shader.uniform.MatrixUniforms;
-import net.mine_diver.macula.util.GLUtils;
+import net.mine_diver.macula.core.ShaderCore;
+import net.mine_diver.macula.shaders.uniform.MatrixUniforms;
+import net.mine_diver.macula.utils.GLUtils;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
@@ -11,7 +12,7 @@ import static org.lwjgl.opengl.ARBFramebufferObject.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.GL_CLAMP_TO_BORDER;
 
-public class ShadowMap {
+public class ShadowMapManager {
 
     public static boolean shadowEnabled = false;
     public static int shadowResolution = 1024;

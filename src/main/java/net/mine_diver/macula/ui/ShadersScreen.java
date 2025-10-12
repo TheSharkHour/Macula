@@ -1,9 +1,9 @@
-package net.mine_diver.macula.gui;
+package net.mine_diver.macula.ui;
 
-import net.mine_diver.macula.util.GLUtils;
-import net.mine_diver.macula.option.ShaderConfig;
-import net.mine_diver.macula.ShaderPack;
-import net.mine_diver.macula.option.ShaderOption;
+import net.mine_diver.macula.utils.GLUtils;
+import net.mine_diver.macula.config.ShaderConfig;
+import net.mine_diver.macula.core.ShaderPack;
+import net.mine_diver.macula.config.ShaderOption;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.Screen;

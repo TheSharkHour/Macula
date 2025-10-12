@@ -1,11 +1,11 @@
-package net.mine_diver.macula.shader.compiler;
+package net.mine_diver.macula.shaders.compiler;
 
-import net.mine_diver.macula.shader.Framebuffer;
-import net.mine_diver.macula.util.GLUtils;
-import net.mine_diver.macula.option.ShaderConfig;
-import net.mine_diver.macula.shader.ShaderCore;
-import net.mine_diver.macula.ShaderPack;
-import net.mine_diver.macula.shader.ShadowMap;
+import net.mine_diver.macula.rendering.FramebufferManager;
+import net.mine_diver.macula.utils.GLUtils;
+import net.mine_diver.macula.config.ShaderConfig;
+import net.mine_diver.macula.core.ShaderCore;
+import net.mine_diver.macula.core.ShaderPack;
+import net.mine_diver.macula.rendering.ShadowMapManager;
 import org.lwjgl.opengl.GL20;
 
 import java.io.BufferedReader;
@@ -56,23 +56,23 @@ public class ShaderCompiler {
     }
 
     static void fragPattern(String line) {
-        if (Framebuffer.colorAttachments < 5 && PATTERN_GAUX1.matcher(line).matches()) Framebuffer.colorAttachments = 5;
-        else if (Framebuffer.colorAttachments < 6 && PATTERN_GAUX2.matcher(line).matches())
-            Framebuffer.colorAttachments = 6;
-        else if (Framebuffer.colorAttachments < 7 && PATTERN_GAUX3.matcher(line).matches())
-            Framebuffer.colorAttachments = 7;
-        else if (Framebuffer.colorAttachments < 8 && PATTERN_SHADOW.matcher(line).matches()) {
-            ShadowMap.shadowEnabled = true;
-            Framebuffer.colorAttachments = 8;
+        if (FramebufferManager.colorAttachments < 5 && PATTERN_GAUX1.matcher(line).matches()) FramebufferManager.colorAttachments = 5;
+        else if (FramebufferManager.colorAttachments < 6 && PATTERN_GAUX2.matcher(line).matches())
+            FramebufferManager.colorAttachments = 6;
+        else if (FramebufferManager.colorAttachments < 7 && PATTERN_GAUX3.matcher(line).matches())
+            FramebufferManager.colorAttachments = 7;
+        else if (FramebufferManager.colorAttachments < 8 && PATTERN_SHADOW.matcher(line).matches()) {
+            ShadowMapManager.shadowEnabled = true;
+            FramebufferManager.colorAttachments = 8;
         } else if (PATTERN_SHADOWRES.matcher(line).matches()) {
             String[] parts = SPLIT_PATTERN.split(line, 4);
-            ShadowMap.shadowResolution = Math.round(
+            ShadowMapManager.shadowResolution = Math.round(
                     Integer.parseInt(parts[2]) * ShaderConfig.configShadowResMul);
-            System.out.println("Shadow map resolution: " + ShadowMap.shadowResolution);
+            System.out.println("Shadow map resolution: " + ShadowMapManager.shadowResolution);
         } else if (PATTERN_SHADOWHPL.matcher(line).matches()) {
             String[] parts = SPLIT_PATTERN.split(line, 4);
             System.out.println("Shadow map half-plane: " + parts[2]);
-            ShadowMap.shadowMapHalfPlane = Float.parseFloat(parts[2]);
+            ShadowMapManager.shadowMapHalfPlane = Float.parseFloat(parts[2]);
         }
     }
 

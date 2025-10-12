@@ -1,6 +1,6 @@
-package net.mine_diver.macula.gui;
+package net.mine_diver.macula.ui;
 
-import net.mine_diver.macula.ShaderPack;
+import net.mine_diver.macula.core.ShaderPack;
 import net.mine_diver.macula.mixin.ScrollableBaseAccessor;
 import net.minecraft.client.gui.widget.EntryListWidget;
 import net.minecraft.client.render.Tessellator;

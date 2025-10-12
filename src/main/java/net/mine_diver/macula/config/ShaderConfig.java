@@ -1,7 +1,7 @@
-package net.mine_diver.macula.option;
+package net.mine_diver.macula.config;
 
 import net.fabricmc.loader.api.FabricLoader;
-import net.mine_diver.macula.ShaderPack;
+import net.mine_diver.macula.core.ShaderPack;
 
 import java.io.File;
 import java.io.FileReader;

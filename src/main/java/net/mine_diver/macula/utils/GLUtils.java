@@ -1,9 +1,9 @@
-package net.mine_diver.macula.util;
+package net.mine_diver.macula.utils;
 
-import net.mine_diver.macula.shader.ShaderCore;
-import net.mine_diver.macula.shader.program.ShaderProgram;
-import net.mine_diver.macula.shader.program.ShaderProgramType;
-import net.mine_diver.macula.shader.program.Uniform;
+import net.mine_diver.macula.core.ShaderCore;
+import net.mine_diver.macula.rendering.pipeline.ShaderProgram;
+import net.mine_diver.macula.rendering.pipeline.ShaderProgramType;
+import net.mine_diver.macula.rendering.pipeline.ShaderUniform;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.ARBFramebufferObject;
@@ -34,7 +34,7 @@ public class GLUtils {
         } else if (cap == GL11.GL_FOG) {
             ShaderCore.fogEnabled = true;
             UniformUtils.setProgramUniform1i(ShaderProgram.shaderProgramId.get(ShaderProgram.activeShaderProgram),
-                    Uniform.FOG_MODE, GL11.glGetInteger(GL11.GL_FOG_MODE));
+                    ShaderUniform.FOG_MODE, GL11.glGetInteger(GL11.GL_FOG_MODE));
         }
     }
 
@@ -46,7 +46,7 @@ public class GLUtils {
         } else if (cap == GL11.GL_FOG) {
             ShaderCore.fogEnabled = false;
             UniformUtils.setProgramUniform1i(ShaderProgram.shaderProgramId.get(ShaderProgram.activeShaderProgram),
-                    Uniform.FOG_MODE, 0);
+                    ShaderUniform.FOG_MODE, 0);
         }
     }
 

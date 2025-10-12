@@ -1,4 +1,4 @@
-package net.mine_diver.macula.shader.uniform;
+package net.mine_diver.macula.shaders.uniform;
 
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;

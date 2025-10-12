@@ -1,8 +1,8 @@
 package net.mine_diver.macula.mixin;
 
-import net.mine_diver.macula.ShaderPack;
-import net.mine_diver.macula.shader.ShaderCore;
-import net.mine_diver.macula.util.TessellatorAccessor;
+import net.mine_diver.macula.core.ShaderPack;
+import net.mine_diver.macula.core.ShaderCore;
+import net.mine_diver.macula.utils.TessellatorAccessor;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.util.GlAllocationUtils;
 import org.lwjgl.opengl.ARBVertexProgram;

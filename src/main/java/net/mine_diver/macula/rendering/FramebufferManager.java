@@ -1,6 +1,7 @@
-package net.mine_diver.macula.shader;
+package net.mine_diver.macula.rendering;
 
-import net.mine_diver.macula.util.GLUtils;
+import net.mine_diver.macula.core.ShaderCore;
+import net.mine_diver.macula.utils.GLUtils;
 import org.lwjgl.opengl.ARBTextureFloat;
 import org.lwjgl.opengl.ARBFramebufferObject;
 import org.lwjgl.opengl.GL11;
@@ -8,7 +9,7 @@ import org.lwjgl.opengl.GL11;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
-public class Framebuffer {
+public class FramebufferManager {
     public static int colorAttachments = 0;
 
     public static IntBuffer defaultDrawBuffers = null;

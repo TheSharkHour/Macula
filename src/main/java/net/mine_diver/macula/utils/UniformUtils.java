@@ -1,6 +1,6 @@
-package net.mine_diver.macula.util;
+package net.mine_diver.macula.utils;
 
-import net.mine_diver.macula.shader.program.Uniform;
+import net.mine_diver.macula.rendering.pipeline.ShaderUniform;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
@@ -19,7 +19,7 @@ public class UniformUtils {
     private static final FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(MATRIX_SIZE);
 
     public static void cacheUniformLocations(int programId) {
-        for (Uniform uniform : Uniform.values()) {
+        for (ShaderUniform uniform : ShaderUniform.values()) {
             int location = GL20.glGetUniformLocation(programId, uniform.getName());
             if (location != -1) {
                 int key = (programId << 16) | uniform.ordinal();
@@ -28,28 +28,28 @@ public class UniformUtils {
         }
     }
 
-    private static int getUniformLocation(int programId, Uniform uniform) {
+    private static int getUniformLocation(int programId, ShaderUniform uniform) {
         int key = (programId << 16) | uniform.ordinal();
 
         return uniformLocationCache.getOrDefault(key, -1);
     }
 
-    public static void setProgramUniform1i(int programId, Uniform uniform, int n) {
+    public static void setProgramUniform1i(int programId, ShaderUniform uniform, int n) {
         int location = getUniformLocation(programId, uniform);
         if (location != -1) GL20.glUniform1i(location, n);
     }
 
-    public static void setProgramUniform1f(int programId, Uniform uniform, float x) {
+    public static void setProgramUniform1f(int programId, ShaderUniform uniform, float x) {
         int location = getUniformLocation(programId, uniform);
         if (location != -1) GL20.glUniform1f(location, x);
     }
 
-    public static void setProgramUniform3f(int programId, Uniform uniform, Vector3f vec3) {
+    public static void setProgramUniform3f(int programId, ShaderUniform uniform, Vector3f vec3) {
         int location = getUniformLocation(programId, uniform);
         if (location != -1) GL20.glUniform3f(location, vec3.x, vec3.y, vec3.z);
     }
 
-    public static void setProgramUniformMatrix4(int programId, Uniform uniform, Matrix4f mat4) {
+    public static void setProgramUniformMatrix4(int programId, ShaderUniform uniform, Matrix4f mat4) {
         int location = getUniformLocation(programId, uniform);
 
         if (location == -1) return;

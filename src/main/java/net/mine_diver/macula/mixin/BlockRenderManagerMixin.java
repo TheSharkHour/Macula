@@ -1,6 +1,6 @@
 package net.mine_diver.macula.mixin;
 
-import net.mine_diver.macula.ShaderPack;
+import net.mine_diver.macula.core.ShaderPack;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.block.BlockRenderManager;
 import org.spongepowered.asm.mixin.Mixin;

@@ -1,4 +1,4 @@
-package net.mine_diver.macula.util;
+package net.mine_diver.macula.utils;
 
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;

@@ -1,6 +1,6 @@
 package net.mine_diver.macula.mixin.gui;
 
-import net.mine_diver.macula.gui.ShadersScreen;
+import net.mine_diver.macula.ui.ShadersScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.option.VideoOptionsScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
