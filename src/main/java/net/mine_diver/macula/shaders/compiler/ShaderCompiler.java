@@ -1,7 +1,7 @@
 package net.mine_diver.macula.shaders.compiler;
 
 import net.mine_diver.macula.rendering.FramebufferManager;
-import net.mine_diver.macula.utils.GLUtils;
+import net.mine_diver.macula.utils.GL;
 import net.mine_diver.macula.config.ShaderConfig;
 import net.mine_diver.macula.core.ShaderCore;
 import net.mine_diver.macula.core.ShaderPack;
@@ -43,7 +43,7 @@ public class ShaderCompiler {
 
         GL20.glShaderSource(shader, shaderCode.toString());
         GL20.glCompileShader(shader);
-        GLUtils.printLogInfo(shader);
+        GL.printLogInfo(shader);
         return shader;
     }
 

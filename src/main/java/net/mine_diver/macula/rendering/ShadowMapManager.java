@@ -2,7 +2,7 @@ package net.mine_diver.macula.rendering;
 
 import net.mine_diver.macula.core.ShaderCore;
 import net.mine_diver.macula.shaders.uniform.MatrixUniforms;
-import net.mine_diver.macula.utils.GLUtils;
+import net.mine_diver.macula.utils.GL;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
@@ -45,7 +45,7 @@ public class ShadowMapManager {
 
         // Load projection matrix to OpenGL
         glMatrixMode(GL_PROJECTION);
-        GLUtils.loadMatrixToOpenGL(shadowProjectionMatrix);
+        GL.loadMatrixToOpenGL(shadowProjectionMatrix);
 
         Matrix4f lightModelView = new Matrix4f();
         lightModelView.translate(0f, 0f, -128f);
@@ -83,7 +83,7 @@ public class ShadowMapManager {
 
         // Load model-view matrix to OpenGL
         glMatrixMode(GL_MODELVIEW);
-        GLUtils.loadMatrixToOpenGL(shadowModelView);
+        GL.loadMatrixToOpenGL(shadowModelView);
     }
 
     public static void initializeShadowMap() {
@@ -114,7 +114,7 @@ public class ShadowMapManager {
     private static void createShadowDepthBuffer() {
         if (shadowDepthBufferId != 0) glDeleteFramebuffers(shadowDepthBufferId);
 
-        shadowDepthBufferId = GLUtils.glCreateDepthBuffer(
+        shadowDepthBufferId = GL.glCreateDepthBuffer(
                 shadowResolution,
                 shadowResolution
         );

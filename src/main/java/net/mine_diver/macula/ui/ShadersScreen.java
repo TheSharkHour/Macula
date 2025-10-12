@@ -1,6 +1,6 @@
 package net.mine_diver.macula.ui;
 
-import net.mine_diver.macula.utils.GLUtils;
+import net.mine_diver.macula.utils.GL;
 import net.mine_diver.macula.config.ShaderConfig;
 import net.mine_diver.macula.core.ShaderPack;
 import net.mine_diver.macula.config.ShaderOption;
@@ -151,7 +151,7 @@ public class ShadersScreen extends Screen {
             updateTimer += 20;
         }
         drawCenteredTextWithShadow(textRenderer, "Shaders", width / 2, 15, 0xffffff);
-        String debug = "OpenGL: " + GLUtils.glVersionString + ", " + GLUtils.glVendorString + ", " + GLUtils.glRendererString;
+        String debug = "OpenGL: " + GL.GL_VERSION_STRING + ", " + GL.GL_VENDOR_STRING + ", " + GL.GL_RENDERER_STRING;
         int debugWidth = textRenderer.getWidth(debug);
         if (debugWidth < width - 5)
             drawCenteredTextWithShadow(textRenderer, debug, width / 2, height - 40, 0x808080);

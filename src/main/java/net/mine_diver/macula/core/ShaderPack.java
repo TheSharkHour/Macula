@@ -4,8 +4,8 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.mine_diver.macula.config.ShaderConfig;
 import net.mine_diver.macula.config.ShaderOption;
 import net.mine_diver.macula.rendering.pipeline.ShaderProgram;
-import net.mine_diver.macula.utils.UniformUtils;
-import net.mine_diver.macula.utils.MinecraftInstance;
+import net.mine_diver.macula.utils.Uniforms;
+import net.mine_diver.macula.utils.MinecraftClient;
 import net.minecraft.client.Minecraft;
 
 import java.io.BufferedReader;
@@ -65,7 +65,7 @@ public class ShaderPack {
         ShaderConfig.shadersConfig.setProperty(ShaderOption.SHADER_PACK.getPropertyKey(), shaderPack);
         ShaderCore.isInitialized = false;
 
-        Minecraft mcInstance = MinecraftInstance.get();
+        Minecraft mcInstance = MinecraftClient.get();
         if (mcInstance != null && mcInstance.player != null) {
             loadShaderPack();
         }
@@ -73,10 +73,10 @@ public class ShaderPack {
 
     public static void loadShaderPack() {
         ShaderProgram.deleteShaders();
-        UniformUtils.clearUniformLocation();
+        Uniforms.clearUniformLocation();
         ShaderCore.isInitialized = false;
         ShaderCore.init();
-        MinecraftInstance.get().worldRenderer.method_1537();
+        MinecraftClient.get().worldRenderer.method_1537();
     }
 
     public static BufferedReader openShaderPackFile(String filename) throws IOException {

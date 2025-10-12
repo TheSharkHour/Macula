@@ -1,7 +1,7 @@
 package net.mine_diver.macula.rendering;
 
 import net.mine_diver.macula.core.ShaderCore;
-import net.mine_diver.macula.utils.GLUtils;
+import net.mine_diver.macula.utils.GL;
 import org.lwjgl.opengl.ARBTextureFloat;
 import org.lwjgl.opengl.ARBFramebufferObject;
 import org.lwjgl.opengl.GL11;
@@ -53,7 +53,7 @@ public class FramebufferManager {
 
         if (defaultDepthBufferId != 0)
             ARBFramebufferObject.glDeleteRenderbuffers(defaultDepthBufferId);
-        defaultDepthBufferId = GLUtils.glCreateDepthBuffer(ShaderCore.renderWidth, ShaderCore.renderHeight);
+        defaultDepthBufferId = GL.glCreateDepthBuffer(ShaderCore.renderWidth, ShaderCore.renderHeight);
 
         ARBFramebufferObject.glFramebufferRenderbuffer(ARBFramebufferObject.GL_FRAMEBUFFER,
                 ARBFramebufferObject.GL_DEPTH_ATTACHMENT, ARBFramebufferObject.GL_RENDERBUFFER,

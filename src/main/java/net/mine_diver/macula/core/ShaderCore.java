@@ -7,8 +7,8 @@ import net.mine_diver.macula.rendering.FramebufferManager;
 import net.mine_diver.macula.rendering.ShadowMapManager;
 import net.mine_diver.macula.rendering.pipeline.ShaderProgram;
 import net.mine_diver.macula.rendering.pipeline.ShaderProgramType;
-import net.mine_diver.macula.utils.GLUtils;
-import net.mine_diver.macula.utils.MinecraftInstance;
+import net.mine_diver.macula.utils.GL;
+import net.mine_diver.macula.utils.MinecraftClient;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.ARBFramebufferObject;
@@ -18,7 +18,7 @@ import org.lwjgl.opengl.GL20;
 
 public class ShaderCore {
 
-    public static final Minecraft MINECRAFT = MinecraftInstance.get();
+    public static final Minecraft MINECRAFT = MinecraftClient.get();
 
     public static boolean isInitialized = false;
 
@@ -74,18 +74,18 @@ public class ShaderCore {
         clearColor[2] = blue;
 
         if (ShadowMapManager.isShadowPass) {
-            GLUtils.glClearBuffer(clearColor[0], clearColor[1], clearColor[2], 1f);
+            GL.glClearBuffer(clearColor[0], clearColor[1], clearColor[2], 1f);
             return;
         }
 
         GL20.glDrawBuffers(FramebufferManager.defaultDrawBuffers);
-        GLUtils.glClearBuffer(0f, 0f, 0f, 0f);
+        GL.glClearBuffer(0f, 0f, 0f, 0f);
 
         GL20.glDrawBuffers(ARBFramebufferObject.GL_COLOR_ATTACHMENT0);
-        GLUtils.glClearBuffer(clearColor[0], clearColor[1], clearColor[2], 1f);
+        GL.glClearBuffer(clearColor[0], clearColor[1], clearColor[2], 1f);
 
         GL20.glDrawBuffers(ARBFramebufferObject.GL_COLOR_ATTACHMENT1);
-        GLUtils.glClearBuffer(1f, 1f, 1f, 1f);
+        GL.glClearBuffer(1f, 1f, 1f, 1f);
 
         GL20.glDrawBuffers(FramebufferManager.defaultDrawBuffers);
     }
@@ -138,7 +138,7 @@ public class ShaderCore {
 
         GL11.glPushMatrix();
 
-        GLUtils.setupScreenOrthographicProjection();
+        GL.setupScreenOrthographicProjection();
 
         GL11.glDisable(GL11.GL_DEPTH_TEST);
         GL11.glEnable(GL11.GL_TEXTURE_2D);
@@ -152,7 +152,7 @@ public class ShaderCore {
         GL20.glDrawBuffers(FramebufferManager.defaultDrawBuffers);
 
         bindPostprocessingTextures();
-        GLUtils.glDrawQuad();
+        GL.glDrawQuad();
 
         // final
 
@@ -160,10 +160,10 @@ public class ShaderCore {
 
         ShaderProgram.useShaderProgram(ShaderProgramType.FINAL);
 
-        GLUtils.glClearBuffer(clearColor[0], clearColor[1], clearColor[2], 1f);
+        GL.glClearBuffer(clearColor[0], clearColor[1], clearColor[2], 1f);
 
         bindPostprocessingTextures();
-        GLUtils.glDrawQuad();
+        GL.glDrawQuad();
 
         GL11.glEnable(GL11.GL_BLEND);
 

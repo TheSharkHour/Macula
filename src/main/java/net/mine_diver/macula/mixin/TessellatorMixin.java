@@ -2,7 +2,7 @@ package net.mine_diver.macula.mixin;
 
 import net.mine_diver.macula.core.ShaderPack;
 import net.mine_diver.macula.core.ShaderCore;
-import net.mine_diver.macula.utils.TessellatorAccessor;
+import net.mine_diver.macula.utils.TessellatorAccess;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.util.GlAllocationUtils;
 import org.lwjgl.opengl.ARBVertexProgram;
@@ -17,7 +17,7 @@ import java.nio.ByteBuffer;
 import java.nio.ShortBuffer;
 
 @Mixin(Tessellator.class)
-public class TessellatorMixin implements TessellatorAccessor {
+public class TessellatorMixin implements TessellatorAccess {
     @Shadow private int mode;
 
     @Shadow private static boolean useTriangles;

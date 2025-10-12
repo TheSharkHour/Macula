@@ -1,10 +1,10 @@
 package net.mine_diver.macula.rendering.pipeline;
 
-import net.mine_diver.macula.utils.GLUtils;
+import net.mine_diver.macula.utils.GL;
 import net.mine_diver.macula.shaders.uniform.MatrixUniforms;
 import net.mine_diver.macula.shaders.uniform.PositionUniforms;
 import net.mine_diver.macula.core.ShaderCore;
-import net.mine_diver.macula.utils.UniformUtils;
+import net.mine_diver.macula.utils.Uniforms;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.mine_diver.macula.rendering.ShadowMapManager;
@@ -61,9 +61,9 @@ public class ShaderProgram {
                 GL20.glBindAttribLocation(programId, ShaderCore.entityAttrib, "mc_Entity");
             GL20.glLinkProgram(programId);
             GL20.glValidateProgram(programId);
-            GLUtils.printLogInfo(programId);
+            GL.printLogInfo(programId);
 
-            UniformUtils.cacheUniformLocations(programId);
+            Uniforms.cacheUniformLocations(programId);
         } else {
             GL20.glDeleteProgram(programId);
             return NO_PROGRAM_ID;
@@ -89,73 +89,73 @@ public class ShaderProgram {
         int programId = ShaderProgram.shaderProgramId.get(ShaderProgram.activeShaderProgram);
         switch (shaderProgramType) {
             case TEXTURED:
-                UniformUtils.setProgramUniform1i(programId, ShaderUniform.TEXTURE, 0);
+                Uniforms.setProgramUniform1i(programId, ShaderUniform.TEXTURE, 0);
                 break;
             case TEXTURED_LIT:
             case HAND:
             case WEATHER:
-                UniformUtils.setProgramUniform1i(programId, ShaderUniform.TEXTURE, 0);
-                UniformUtils.setProgramUniform1i(programId, ShaderUniform.LIGHTMAP, 1);
+                Uniforms.setProgramUniform1i(programId, ShaderUniform.TEXTURE, 0);
+                Uniforms.setProgramUniform1i(programId, ShaderUniform.LIGHTMAP, 1);
                 break;
             case TERRAIN:
             case WATER:
-                UniformUtils.setProgramUniform1i(programId, ShaderUniform.TEXTURE, 0);
-                UniformUtils.setProgramUniform1i(programId, ShaderUniform.LIGHTMAP, 1);
-                UniformUtils.setProgramUniform1i(programId, ShaderUniform.NORMALS, 2);
-                UniformUtils.setProgramUniform1i(programId, ShaderUniform.SPECULAR, 3);
+                Uniforms.setProgramUniform1i(programId, ShaderUniform.TEXTURE, 0);
+                Uniforms.setProgramUniform1i(programId, ShaderUniform.LIGHTMAP, 1);
+                Uniforms.setProgramUniform1i(programId, ShaderUniform.NORMALS, 2);
+                Uniforms.setProgramUniform1i(programId, ShaderUniform.SPECULAR, 3);
                 break;
             case COMPOSITE:
             case FINAL:
-                UniformUtils.setProgramUniform1i(programId, ShaderUniform.GCOLOR, 0);
-                UniformUtils.setProgramUniform1i(programId, ShaderUniform.GDEPTH, 1);
-                UniformUtils.setProgramUniform1i(programId, ShaderUniform.GNORMAL, 2);
-                UniformUtils.setProgramUniform1i(programId, ShaderUniform.COMPOSITE, 3);
-                UniformUtils.setProgramUniform1i(programId, ShaderUniform.GAUX1, 4);
-                UniformUtils.setProgramUniform1i(programId, ShaderUniform.GAUX2, 5);
-                UniformUtils.setProgramUniform1i(programId, ShaderUniform.GAUX3, 6);
-                UniformUtils.setProgramUniform1i(programId, ShaderUniform.SHADOW, 7);
+                Uniforms.setProgramUniform1i(programId, ShaderUniform.GCOLOR, 0);
+                Uniforms.setProgramUniform1i(programId, ShaderUniform.GDEPTH, 1);
+                Uniforms.setProgramUniform1i(programId, ShaderUniform.GNORMAL, 2);
+                Uniforms.setProgramUniform1i(programId, ShaderUniform.COMPOSITE, 3);
+                Uniforms.setProgramUniform1i(programId, ShaderUniform.GAUX1, 4);
+                Uniforms.setProgramUniform1i(programId, ShaderUniform.GAUX2, 5);
+                Uniforms.setProgramUniform1i(programId, ShaderUniform.GAUX3, 6);
+                Uniforms.setProgramUniform1i(programId, ShaderUniform.SHADOW, 7);
 
-                UniformUtils.setProgramUniformMatrix4(programId, ShaderUniform.GB_PREVIOUS_PROJECTION, MatrixUniforms.previousProjection);
-                UniformUtils.setProgramUniformMatrix4(programId, ShaderUniform.GB_PROJECTION, MatrixUniforms.projection);
-                UniformUtils.setProgramUniformMatrix4(programId, ShaderUniform.GB_PROJECTION_INVERSE, MatrixUniforms.projectionInverse);
+                Uniforms.setProgramUniformMatrix4(programId, ShaderUniform.GB_PREVIOUS_PROJECTION, MatrixUniforms.previousProjection);
+                Uniforms.setProgramUniformMatrix4(programId, ShaderUniform.GB_PROJECTION, MatrixUniforms.projection);
+                Uniforms.setProgramUniformMatrix4(programId, ShaderUniform.GB_PROJECTION_INVERSE, MatrixUniforms.projectionInverse);
 
-                UniformUtils.setProgramUniformMatrix4(programId, ShaderUniform.GB_PREVIOUS_MODELVIEW, MatrixUniforms.previousModelView);
+                Uniforms.setProgramUniformMatrix4(programId, ShaderUniform.GB_PREVIOUS_MODELVIEW, MatrixUniforms.previousModelView);
 
                 if (ShadowMapManager.shadowEnabled) {
-                    UniformUtils.setProgramUniformMatrix4(programId, ShaderUniform.SHADOW_PROJECTION, MatrixUniforms.shadowProjection);
-                    UniformUtils.setProgramUniformMatrix4(programId, ShaderUniform.SHADOW_PROJECTION_INVERSE, MatrixUniforms.shadowProjectionInverse);
+                    Uniforms.setProgramUniformMatrix4(programId, ShaderUniform.SHADOW_PROJECTION, MatrixUniforms.shadowProjection);
+                    Uniforms.setProgramUniformMatrix4(programId, ShaderUniform.SHADOW_PROJECTION_INVERSE, MatrixUniforms.shadowProjectionInverse);
 
-                    UniformUtils.setProgramUniformMatrix4(programId, ShaderUniform.SHADOW_MODELVIEW, MatrixUniforms.shadowModelView);
-                    UniformUtils.setProgramUniformMatrix4(programId, ShaderUniform.SHADOW_MODELVIEW_INVERSE, MatrixUniforms.shadowModelViewInverse);
+                    Uniforms.setProgramUniformMatrix4(programId, ShaderUniform.SHADOW_MODELVIEW, MatrixUniforms.shadowModelView);
+                    Uniforms.setProgramUniformMatrix4(programId, ShaderUniform.SHADOW_MODELVIEW_INVERSE, MatrixUniforms.shadowModelViewInverse);
                 }
                 break;
         }
 
         ItemStack stack = ShaderCore.MINECRAFT.player.inventory.getSelectedItem();
-        UniformUtils.setProgramUniform1i(programId, ShaderUniform.HELD_ITEM_ID, stack == null ? -1 : stack.itemId);
-        UniformUtils.setProgramUniform1i(programId, ShaderUniform.HELD_BLOCK_LIGHT_VALUE,
+        Uniforms.setProgramUniform1i(programId, ShaderUniform.HELD_ITEM_ID, stack == null ? -1 : stack.itemId);
+        Uniforms.setProgramUniform1i(programId, ShaderUniform.HELD_BLOCK_LIGHT_VALUE,
                 stack == null || stack.itemId >= Block.BLOCKS.length ? 0 : Block.BLOCKS_LIGHT_LUMINANCE[stack.itemId]);
 
-        UniformUtils.setProgramUniform1i(programId, ShaderUniform.FOG_MODE, ShaderCore.fogEnabled ? GL11.glGetInteger(GL11.GL_FOG_MODE) : 0);
-        UniformUtils.setProgramUniform1f(programId, ShaderUniform.RAIN_STRENGTH, ShaderCore.rainStrength);
+        Uniforms.setProgramUniform1i(programId, ShaderUniform.FOG_MODE, ShaderCore.fogEnabled ? GL11.glGetInteger(GL11.GL_FOG_MODE) : 0);
+        Uniforms.setProgramUniform1f(programId, ShaderUniform.RAIN_STRENGTH, ShaderCore.rainStrength);
 
-        UniformUtils.setProgramUniform1i(programId, ShaderUniform.WORLD_TIME, (int) (ShaderCore.MINECRAFT.world.getTime() % 24000));
+        Uniforms.setProgramUniform1i(programId, ShaderUniform.WORLD_TIME, (int) (ShaderCore.MINECRAFT.world.getTime() % 24000));
 
-        UniformUtils.setProgramUniform1f(programId, ShaderUniform.ASPECT_RATIO, ShaderCore.aspectRatio);
-        UniformUtils.setProgramUniform1f(programId, ShaderUniform.VIEW_WIDTH, (float) ShaderCore.renderWidth);
-        UniformUtils.setProgramUniform1f(programId, ShaderUniform.VIEW_HEIGHT, (float) ShaderCore.renderHeight);
+        Uniforms.setProgramUniform1f(programId, ShaderUniform.ASPECT_RATIO, ShaderCore.aspectRatio);
+        Uniforms.setProgramUniform1f(programId, ShaderUniform.VIEW_WIDTH, (float) ShaderCore.renderWidth);
+        Uniforms.setProgramUniform1f(programId, ShaderUniform.VIEW_HEIGHT, (float) ShaderCore.renderHeight);
 
-        UniformUtils.setProgramUniform1f(programId, ShaderUniform.NEAR, 0.05F);
-        UniformUtils.setProgramUniform1f(programId, ShaderUniform.FAR, 256 >> ShaderCore.MINECRAFT.options.viewDistance);
+        Uniforms.setProgramUniform1f(programId, ShaderUniform.NEAR, 0.05F);
+        Uniforms.setProgramUniform1f(programId, ShaderUniform.FAR, 256 >> ShaderCore.MINECRAFT.options.viewDistance);
 
-        UniformUtils.setProgramUniform3f(programId, ShaderUniform.SUN_POSITION, PositionUniforms.sunPosition);
-        UniformUtils.setProgramUniform3f(programId, ShaderUniform.MOON_POSITION, PositionUniforms.moonPosition);
+        Uniforms.setProgramUniform3f(programId, ShaderUniform.SUN_POSITION, PositionUniforms.sunPosition);
+        Uniforms.setProgramUniform3f(programId, ShaderUniform.MOON_POSITION, PositionUniforms.moonPosition);
 
-        UniformUtils.setProgramUniform3f(programId, ShaderUniform.PREVIOUS_CAMERA_POSITION, PositionUniforms.previousCameraPosition);
-        UniformUtils.setProgramUniform3f(programId, ShaderUniform.CAMERA_POSITION, PositionUniforms.cameraPosition);
+        Uniforms.setProgramUniform3f(programId, ShaderUniform.PREVIOUS_CAMERA_POSITION, PositionUniforms.previousCameraPosition);
+        Uniforms.setProgramUniform3f(programId, ShaderUniform.CAMERA_POSITION, PositionUniforms.cameraPosition);
 
-        UniformUtils.setProgramUniformMatrix4(programId, ShaderUniform.GB_MODELVIEW, MatrixUniforms.modelView);
-        UniformUtils.setProgramUniformMatrix4(programId, ShaderUniform.GB_MODELVIEW_INVERSE, MatrixUniforms.modelViewInverse);
+        Uniforms.setProgramUniformMatrix4(programId, ShaderUniform.GB_MODELVIEW, MatrixUniforms.modelView);
+        Uniforms.setProgramUniformMatrix4(programId, ShaderUniform.GB_MODELVIEW_INVERSE, MatrixUniforms.modelViewInverse);
     }
 
     public static void deleteShaders() {
