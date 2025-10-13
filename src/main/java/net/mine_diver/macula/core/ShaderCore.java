@@ -5,6 +5,7 @@ package net.mine_diver.macula.core;
 import net.mine_diver.macula.config.ShaderConfig;
 import net.mine_diver.macula.rendering.FramebufferManager;
 import net.mine_diver.macula.rendering.ShadowMapManager;
+import net.mine_diver.macula.rendering.TextureManager;
 import net.mine_diver.macula.rendering.pipeline.ShaderProgram;
 import net.mine_diver.macula.rendering.pipeline.ShaderProgramType;
 import net.mine_diver.macula.utils.GL;
@@ -13,7 +14,6 @@ import net.minecraft.client.Minecraft;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.ARBFramebufferObject;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 
 public class ShaderCore {
@@ -21,12 +21,6 @@ public class ShaderCore {
     public static final Minecraft MINECRAFT = MinecraftClient.get();
 
     public static boolean isInitialized = false;
-
-    public static int renderWidth = 0;
-    public static int renderHeight = 0;
-    public static float aspectRatio = 0;
-
-    private static final float[] clearColor = new float[3];
 
     public static float rainStrength = 0.0f;
 
@@ -63,41 +57,9 @@ public class ShaderCore {
         FramebufferManager.defaultTextures = BufferUtils.createIntBuffer(FramebufferManager.colorAttachments);
         FramebufferManager.defaultRenderBuffers = BufferUtils.createIntBuffer(FramebufferManager.colorAttachments);
 
-        resize();
+        FramebufferManager.resize(MINECRAFT.displayWidth, MINECRAFT.displayHeight);
         ShadowMapManager.initializeShadowMap();
         isInitialized = true;
-    }
-
-    public static void setClearColor(float red, float green, float blue) {
-        clearColor[0] = red;
-        clearColor[1] = green;
-        clearColor[2] = blue;
-
-        if (ShadowMapManager.isShadowPass) {
-            GL.glClearBuffer(clearColor[0], clearColor[1], clearColor[2], 1f);
-            return;
-        }
-
-        GL20.glDrawBuffers(FramebufferManager.defaultDrawBuffers);
-        GL.glClearBuffer(0f, 0f, 0f, 0f);
-
-        GL20.glDrawBuffers(ARBFramebufferObject.GL_COLOR_ATTACHMENT0);
-        GL.glClearBuffer(clearColor[0], clearColor[1], clearColor[2], 1f);
-
-        GL20.glDrawBuffers(ARBFramebufferObject.GL_COLOR_ATTACHMENT1);
-        GL.glClearBuffer(1f, 1f, 1f, 1f);
-
-        GL20.glDrawBuffers(FramebufferManager.defaultDrawBuffers);
-    }
-
-    private static void resize() {
-        renderWidth = MINECRAFT.displayWidth;
-        renderHeight = MINECRAFT.displayHeight;
-
-        aspectRatio = (float) renderWidth / (float) renderHeight;
-
-        FramebufferManager.setupRenderTextures();
-        FramebufferManager.setupFrameBuffer();
     }
 
     public static void beginRender(Minecraft minecraft, float f, long l) {
@@ -107,8 +69,8 @@ public class ShaderCore {
 
         if (!isInitialized) init();
         if (!ShaderPack.shaderPackLoaded) return;
-        if (MINECRAFT.displayWidth != renderWidth || MINECRAFT.displayHeight != renderHeight)
-            resize();
+        if (MINECRAFT.displayWidth != FramebufferManager.renderWidth || MINECRAFT.displayHeight != FramebufferManager.renderHeight)
+            FramebufferManager.resize(MINECRAFT.displayWidth, MINECRAFT.displayHeight);
 
         if (ShadowMapManager.shadowEnabled) {
             // do shadow pass
@@ -151,7 +113,7 @@ public class ShaderCore {
 
         GL20.glDrawBuffers(FramebufferManager.defaultDrawBuffers);
 
-        bindPostprocessingTextures();
+        TextureManager.bindPostprocessingTextures();
         GL.glDrawQuad();
 
         // final
@@ -160,9 +122,11 @@ public class ShaderCore {
 
         ShaderProgram.useShaderProgram(ShaderProgramType.FINAL);
 
-        GL.glClearBuffer(clearColor[0], clearColor[1], clearColor[2], 1f);
+        GL.glClearBuffer(
+                FramebufferManager.clearColor[0], FramebufferManager.clearColor[1], FramebufferManager.clearColor[2],
+                1f);
 
-        bindPostprocessingTextures();
+        TextureManager.bindPostprocessingTextures();
         GL.glDrawQuad();
 
         GL11.glEnable(GL11.GL_BLEND);
@@ -173,7 +137,7 @@ public class ShaderCore {
 
     public static void beginTerrain() {
         ShaderProgram.useShaderProgram(ShaderProgramType.TERRAIN);
-        bindEnvironmentTextures();
+        TextureManager.bindEnvironmentTextures(MINECRAFT);
     }
 
     public static void endTerrain() {
@@ -182,7 +146,7 @@ public class ShaderCore {
 
     public static void beginWater() {
         ShaderProgram.useShaderProgram(ShaderProgramType.WATER);
-        bindEnvironmentTextures();
+        TextureManager.bindEnvironmentTextures(MINECRAFT);
     }
 
     public static void endWater() {
@@ -217,28 +181,5 @@ public class ShaderCore {
         ShaderProgram.useShaderProgram(ShaderProgramType.TEXTURED);
     }
 
-    private static void bindPostprocessingTextures() {
-        for (byte i = 0; i < FramebufferManager.colorAttachments; i++) {
-            GL13.glActiveTexture(GL13.GL_TEXTURE0 + i);
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, FramebufferManager.defaultTextures.get(i));
-        }
-
-        if (ShadowMapManager.shadowEnabled) {
-            GL13.glActiveTexture(GL13.GL_TEXTURE7);
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, ShadowMapManager.shadowDepthTextureId);
-        }
-
-        GL13.glActiveTexture(GL13.GL_TEXTURE0);
-
-        GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-    }
-
-    private static void bindEnvironmentTextures() {
-        GL13.glActiveTexture(GL13.GL_TEXTURE2);
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, MINECRAFT.textureManager.getTextureId("/terrain_nh.png"));
-        GL13.glActiveTexture(GL13.GL_TEXTURE3);
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, MINECRAFT.textureManager.getTextureId("/terrain_s.png"));
-        GL13.glActiveTexture(GL13.GL_TEXTURE0);
-    }
 }
 

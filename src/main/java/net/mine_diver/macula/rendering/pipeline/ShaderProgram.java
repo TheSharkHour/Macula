@@ -1,5 +1,6 @@
 package net.mine_diver.macula.rendering.pipeline;
 
+import net.mine_diver.macula.rendering.FramebufferManager;
 import net.mine_diver.macula.utils.GL;
 import net.mine_diver.macula.shaders.uniform.MatrixUniforms;
 import net.mine_diver.macula.shaders.uniform.PositionUniforms;
@@ -141,9 +142,9 @@ public class ShaderProgram {
 
         Uniforms.setProgramUniform1i(programId, ShaderUniform.WORLD_TIME, (int) (ShaderCore.MINECRAFT.world.getTime() % 24000));
 
-        Uniforms.setProgramUniform1f(programId, ShaderUniform.ASPECT_RATIO, ShaderCore.aspectRatio);
-        Uniforms.setProgramUniform1f(programId, ShaderUniform.VIEW_WIDTH, (float) ShaderCore.renderWidth);
-        Uniforms.setProgramUniform1f(programId, ShaderUniform.VIEW_HEIGHT, (float) ShaderCore.renderHeight);
+        Uniforms.setProgramUniform1f(programId, ShaderUniform.ASPECT_RATIO, FramebufferManager.aspectRatio);
+        Uniforms.setProgramUniform1f(programId, ShaderUniform.VIEW_WIDTH, (float) FramebufferManager.renderWidth);
+        Uniforms.setProgramUniform1f(programId, ShaderUniform.VIEW_HEIGHT, (float) FramebufferManager.renderHeight);
 
         Uniforms.setProgramUniform1f(programId, ShaderUniform.NEAR, 0.05F);
         Uniforms.setProgramUniform1f(programId, ShaderUniform.FAR, 256 >> ShaderCore.MINECRAFT.options.viewDistance);

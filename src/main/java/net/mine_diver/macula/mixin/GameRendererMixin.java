@@ -2,6 +2,7 @@ package net.mine_diver.macula.mixin;
 
 import net.mine_diver.macula.core.ShaderPack;
 import net.mine_diver.macula.core.ShaderCore;
+import net.mine_diver.macula.rendering.FramebufferManager;
 import net.mine_diver.macula.shaders.uniform.PositionUniforms;
 import net.minecraft.client.Minecraft;
 import net.minecraft.sortme.GameRenderer;
@@ -39,7 +40,7 @@ public abstract class GameRendererMixin {
     )
     private void setClearColor(float l, long par2, CallbackInfo ci) {
         if (!ShaderPack.shaderPackLoaded) return;
-        ShaderCore.setClearColor(field_2346, field_2347, field_2348);
+        FramebufferManager.setClearColor(field_2346, field_2347, field_2348);
     }
 
     @Inject(
