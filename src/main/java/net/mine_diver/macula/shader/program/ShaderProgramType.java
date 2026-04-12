@@ -10,6 +10,7 @@ public enum ShaderProgramType {
     HAND("gbuffers_hand", TEXTURED_LIT),
     WEATHER("gbuffers_weather", TEXTURED_LIT),
     COMPOSITE("composite", NONE),
+    ENTITY("gbuffers_entities", TEXTURED_LIT),
     FINAL("final", NONE);
 
     public final String fileName;

@@ -216,6 +216,31 @@ public abstract class GameRendererMixin {
         ShaderCore.endHand();
     }
 
+    @Inject(
+            method = "delta(FJ)V",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/render/WorldRenderer;method_1544(Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/class_68;F)V"
+            )
+    )
+    private void injectBeginEntities(float l, long par2, CallbackInfo ci) {
+        if (!ShaderPack.shaderPackLoaded) return;
+        ShaderCore.beginEntities();
+    }
+
+    @Inject(
+            method = "delta(FJ)V",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/render/WorldRenderer;method_1544(Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/class_68;F)V",
+                    shift = At.Shift.AFTER
+            )
+    )
+    private void injectEndEntities(float l, long par2, CallbackInfo ci) {
+        if (!ShaderPack.shaderPackLoaded) return;
+        ShaderCore.endEntities();
+    }
+
     @Shadow
     private Minecraft minecraft;
     @Shadow

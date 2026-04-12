@@ -216,6 +216,14 @@ public class ShaderCore {
         ShaderProgram.useShaderProgram(ShaderProgramType.TEXTURED);
     }
 
+    public static void beginEntities() {
+        ShaderProgram.useShaderProgram(ShaderProgramType.ENTITY);
+    }
+
+    public static void endEntities() {
+        ShaderProgram.useShaderProgram(ShaderProgramType.TEXTURED);
+    }
+
     private static void bindPostprocessingTextures() {
         for (byte i = 0; i < Framebuffer.colorAttachments; i++) {
             GL13.glActiveTexture(GL13.GL_TEXTURE0 + i);

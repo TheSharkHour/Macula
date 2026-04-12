@@ -94,6 +94,7 @@ public class ShaderProgram {
             case TEXTURED_LIT:
             case HAND:
             case WEATHER:
+            case ENTITY:
                 UniformUtils.setProgramUniform1i(programId, Uniform.TEXTURE, 0);
                 UniformUtils.setProgramUniform1i(programId, Uniform.LIGHTMAP, 1);
                 break;
